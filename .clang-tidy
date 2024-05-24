@@ -1,5 +1,6 @@
 ---
 Checks: "*,\
+  -cppcoreguidelines-avoid-do-while,\
   -google-readability-todo,\
   -abseil-*,\
   -altera-*,\

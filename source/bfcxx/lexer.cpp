@@ -3,7 +3,7 @@
 #include <iostream>
 #include <optional>
 
-#include "lexer.hpp"
+#include <bfcxx/lexer.hpp>
 
 namespace bfcxx
 {
