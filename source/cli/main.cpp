@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-#include "../../include/bfcxx/lexer.hpp"
+#include <bfcxx/lexer.hpp>
 
 auto repl() -> void
 {
