@@ -1,12 +1,13 @@
 ---
 Checks: "*,\
   -google-readability-todo,\
+  -abseil-*,\
   -altera-*,\
   -fuchsia-*,\
-  fuchsia-multiple-inheritance,\
   -misc-non-private-member-variables-in-classes,\
   -llvm-include-order,\
-  -llvmlibc-*"
+  -llvmlibc-*,\
+  -readability-identifier-length"
 WarningsAsErrors: ""
 CheckOptions:
   - { key: "bugprone-argument-comment.StrictMode", value: "true" }

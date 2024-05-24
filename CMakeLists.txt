@@ -1,4 +1,8 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.21)
+
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 project(
     bfcxx
     VERSION 0.1.0
@@ -7,19 +11,17 @@ project(
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(prevent-in-source-builds)
-
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+include(CPM)
 
 add_library(
     bfcxx_lib OBJECT
-    source/lib.cpp
+    source/bfcxx/lexer.cpp
 )
 
 target_include_directories(
     bfcxx_lib
     PUBLIC
-    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>"
+    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/bfcxx>"
 )
 
 target_compile_features(bfcxx_lib PUBLIC cxx_std_23)
@@ -32,3 +34,13 @@ set_target_properties(bfcxx_exe PROPERTIES
 )
 target_compile_features(bfcxx_exe PRIVATE cxx_std_23)
 target_link_libraries(bfcxx_exe PRIVATE bfcxx_lib)
+
+# Testing
+if(NOT PROJECT_IS_TOP_LEVEL)
+    return()
+endif()
+
+if(BUILD_TESTING)
+    message(STATUS "Building tests")
+    add_subdirectory(test)
+endif()
