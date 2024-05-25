@@ -47,7 +47,7 @@ auto main(int argc, char** argv) -> int
   if (args.size() == 1) {
     repl();
   } else if (args.size() == 2) {
-    run_file(args[0]);
+    run_file(args[1]);
   } else {
     std::cerr << "Usage: " << args[0] << " [path]\n";
     return 1;
