@@ -1,7 +1,6 @@
 #include <string>
 
 #include <bfcxx/lexer.hpp>
-
 #include <catch2/catch_test_macros.hpp>
 
 #define REQUIRE_TOKENS(source, expected_tokens) \
