@@ -13,14 +13,14 @@ namespace
 constexpr std::array<bool, 256> is_bf_char_byte_table = []
 {
   std::array<bool, 256> table = {};
-  table['+'] = true;
-  table['-'] = true;
-  table['>'] = true;
-  table['<'] = true;
-  table['['] = true;
-  table[']'] = true;
-  table[','] = true;
-  table['.'] = true;
+  table[literals::increment] = true;
+  table[literals::decrement] = true;
+  table[literals::move_right] = true;
+  table[literals::move_left] = true;
+  table[literals::loop_start] = true;
+  table[literals::loop_end] = true;
+  table[literals::read_stdin] = true;
+  table[literals::write_stdout] = true;
   return table;
 }();
 

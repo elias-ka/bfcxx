@@ -26,7 +26,10 @@
     {
       "name": "clang-debug",
       "description": "Debug build with Clang",
-      "inherits": ["common", "flags-gcc-clang"],
+      "inherits": [
+        "common",
+        "flags-gcc-clang"
+      ],
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_CXX_COMPILER": "clang++",
@@ -36,7 +39,10 @@
     {
       "name": "clang-release",
       "description": "Release build with Clang",
-      "inherits": ["common", "flags-gcc-clang"],
+      "inherits": [
+        "common",
+        "flags-gcc-clang"
+      ],
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_COMPILER": "clang++"

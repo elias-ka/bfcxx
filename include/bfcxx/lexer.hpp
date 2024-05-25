@@ -4,11 +4,22 @@
 #include <cstdint>
 #include <iostream>
 #include <optional>
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace bfcxx
 {
+namespace literals
+{
+static constexpr char move_left = '<';
+static constexpr char move_right = '>';
+static constexpr char increment = '+';
+static constexpr char decrement = '-';
+static constexpr char write_stdout = '.';
+static constexpr char read_stdin = ',';
+static constexpr char loop_start = '[';
+static constexpr char loop_end = ']';
+}  // namespace literals
 
 struct token
 {

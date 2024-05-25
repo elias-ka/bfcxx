@@ -1,7 +1,9 @@
 #include <fstream>
 #include <iostream>
+#include <span>
 #include <string>
 
+#include <bfcxx/interpreter.hpp>
 #include <bfcxx/lexer.hpp>
 
 auto repl() -> void
@@ -10,13 +12,16 @@ auto repl() -> void
   while (true) {
     std::cout << ">>> ";
     std::getline(std::cin, line);
+    if (line.empty()) {
+      continue;
+    }
     if (line == "exit") {
       break;
     }
     bfcxx::lexer lexer {line};
-    for (const auto& token : lexer.tokens()) {
-      std::cout << token << '\n';
-    }
+    bfcxx::interpreter interpreter {lexer.tokens()};
+    interpreter.run();
+    std::cout << '\n';
   }
 }
 
@@ -31,19 +36,20 @@ auto run_file(const std::string& path) -> void
                       std::istreambuf_iterator<char>()};
 
   bfcxx::lexer lexer {source};
-  for (const auto& token : lexer.tokens()) {
-    std::cout << token << '\n';
-  }
+  bfcxx::interpreter interpreter {lexer.tokens()};
+  interpreter.run();
 }
 
 auto main(int argc, char** argv) -> int
 {
-  if (argc == 1) {
+  auto args = std::span(argv, static_cast<std::size_t>(argc));
+
+  if (args.size() == 1) {
     repl();
-  } else if (argc == 2) {
-    run_file(argv[1]);
+  } else if (args.size() == 2) {
+    run_file(args[0]);
   } else {
-    std::cerr << "Usage: " << argv[0] << " [path]\n";
+    std::cerr << "Usage: " << args[0] << " [path]\n";
     return 1;
   }
 }
