@@ -15,11 +15,15 @@ It consists of only 8 commands:
 | `]`     | Jump back to the command after the matching `[` if the memory cell at the pointer is nonzero |
 
 ## Building
-The project uses C++23 features and requires a clang compiler (tested with clang 18) and CMake 3.21. To build the project, run:
+A C++20 compatible compiler and CMake 3.21 are required. To build the project, run:
 ```sh
-cmake --build --preset clang-release
+cmake --build --preset <preset-name>
 ```
-This will create an `out` directory with the compiled executable for the CLI at `/out/build/clang-release/source/bfcxx/cli/bfcxx`.
+where `<preset-name>` is the name of the preset to use. To list all available presets, run:
+```sh
+cmake --list-presets
+```
+This will create an `out` directory with the compiled executable for the CLI at `/out/build/<preset-name>/source/bfcxx/cli/bfcxx`.
 
 ## Usage
 The interpreter can be used as a read-eval-print loop (primitive, only a single line at a time) or to interpret a file:

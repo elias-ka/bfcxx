@@ -12,7 +12,7 @@ target_include_directories(bfcxx_lib
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
 )
 
-target_compile_features(bfcxx_lib PUBLIC cxx_std_23)
+target_compile_features(bfcxx_lib PUBLIC cxx_std_20)
 
 set_target_properties(bfcxx_lib
         PROPERTIES VERSION ${PROJECT_VERSION}
