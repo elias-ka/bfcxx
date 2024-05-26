@@ -2,9 +2,9 @@
 
 #include <span>
 
-#include <bfcxx/lexer.hpp>
+#include <bfcxx/parser.hpp>
 
 namespace bfcxx
 {
-auto interpret(const std::vector<token>& tokens) -> void;
+auto interpret(const std::vector<op>& ops) -> void;
 }  // namespace bfcxx

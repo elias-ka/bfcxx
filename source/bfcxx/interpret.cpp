@@ -9,6 +9,7 @@ namespace bfcxx
 {
 namespace
 {
+
 auto die(const std::string& msg) -> void
 {
   std::cerr << "err: " << msg << '\n';
@@ -16,22 +17,22 @@ auto die(const std::string& msg) -> void
   std::exit(1);
 }
 
-auto compute_jumptable(const std::vector<token>& tokens)
+[[nodiscard]] auto compute_jumptable(const std::vector<op>& ops)
     -> std::vector<std::size_t>
 {
   std::size_t offset {0};
-  std::vector<std::size_t> jump_table(tokens.size(), 0);
+  std::vector<std::size_t> jump_table(ops.size(), 0);
 
-  for (; offset < tokens.size(); offset++) {
-    const token& tok = tokens[offset];
-    if (tok.literal == literals::loop_start) {
+  for (; offset < ops.size(); offset++) {
+    const auto op = ops[offset];
+    if (op.kind == op_kind::loop_start) {
       std::size_t depth = 1;
       std::size_t seek = offset;
 
-      while (depth > 0 && ++seek < tokens.size()) {
-        if (tokens[seek].literal == literals::loop_start) {
+      while (depth > 0 && ++seek < ops.size()) {
+        if (ops[seek].kind == op_kind::loop_start) {
           depth++;
-        } else if (tokens[seek].literal == literals::loop_end) {
+        } else if (ops[seek].kind == op_kind::loop_end) {
           depth--;
         }
       }
@@ -49,66 +50,60 @@ auto compute_jumptable(const std::vector<token>& tokens)
 
 }  // namespace
 
-auto interpret(const std::vector<token>& tokens) -> void
+auto interpret(const std::vector<op>& ops) -> void
 {
   std::vector<std::uint8_t> mem(30000, 0);
   std::size_t offset {0};
   std::size_t ptr {0};
-  const auto jump_table = compute_jumptable(tokens);
+  const auto jump_table = compute_jumptable(ops);
 
-  for (; offset < tokens.size(); offset++) {
-    const token& tok = tokens[offset];
+  for (; offset < ops.size(); offset++) {
+    const auto op = ops[offset];
 
-    switch (tok.literal) {
-      case literals::move_left: {
-        if (ptr - tok.repeats < 0) {
+    switch (op.kind) {
+      case op_kind::move_left: {
+        if (ptr - op.arg < 0) {
           die(std::format("out of bounds access at offset={}", offset));
           return;
         }
-        ptr -= tok.repeats;
+        ptr -= op.arg;
         break;
       }
-      case literals::move_right: {
-        if (ptr + tok.repeats >= mem.size()) {
+      case op_kind::move_right: {
+        if (ptr + op.arg >= mem.size()) {
           die(std::format("out of bounds access at offset={}", offset));
           return;
         }
-        ptr += tok.repeats;
+        ptr += op.arg;
         break;
       }
-      case literals::increment: {
+      case op_kind::increment: {
+        mem.at(ptr) = static_cast<std::uint8_t>((mem.at(ptr) + op.arg) % 256);
+        break;
+      }
+      case op_kind::decrement: {
         mem.at(ptr) =
-            static_cast<std::uint8_t>((mem.at(ptr) + tok.repeats) % 256);
+            static_cast<std::uint8_t>((mem.at(ptr) - op.arg + 256) % 256);
         break;
       }
-      case literals::decrement: {
-        mem.at(ptr) =
-            static_cast<std::uint8_t>((mem.at(ptr) - tok.repeats + 256) % 256);
-        break;
-      }
-      case literals::write_stdout: {
+      case op_kind::write_stdout: {
         std::cout.put(static_cast<char>(mem.at(ptr)));
         break;
       }
-      case literals::read_stdin: {
+      case op_kind::read_stdin: {
         mem.at(ptr) = static_cast<std::uint8_t>(std::cin.get());
         break;
       }
-      case literals::loop_start: {
+      case op_kind::loop_start: {
         if (mem.at(ptr) == 0) {
           offset = jump_table[offset];
         }
         break;
       }
-      case literals::loop_end: {
+      case op_kind::loop_end: {
         if (mem.at(ptr) != 0) {
           offset = jump_table[offset];
         }
-        break;
-      }
-      default: {
-        die(std::format(
-            "bad character '{}' at offset={}", tok.literal, offset));
         break;
       }
     }

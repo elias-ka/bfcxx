@@ -9,7 +9,7 @@ include(CTest)
 include(Catch)
 
 add_executable(bfcxx_tests
-        test_lexer.cpp
+        test_parser.cpp
 )
 target_link_libraries(bfcxx_tests PRIVATE Catch2::Catch2WithMain bfcxx_lib)
 

@@ -1,7 +1,7 @@
 include(GenerateExportHeader)
 
 add_library(bfcxx_lib
-        lexer.cpp
+        parser.cpp
         interpret.cpp
 )
 add_library(bfcxx::lib ALIAS bfcxx_lib)

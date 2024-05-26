@@ -4,7 +4,7 @@
 #include <string>
 
 #include <bfcxx/interpret.hpp>
-#include <bfcxx/lexer.hpp>
+#include <bfcxx/parser.hpp>
 
 auto repl() -> void
 {
@@ -20,8 +20,8 @@ auto repl() -> void
     if (line == "exit") {
       break;
     }
-    bfcxx::lexer lexer {line};
-    bfcxx::interpret(lexer.tokens());
+    bfcxx::parser parser {line};
+    bfcxx::interpret(parser.ops());
     std::cout << '\n';
   }
 }
@@ -36,8 +36,8 @@ auto run_file(const std::string& path) -> void
   std::string source {std::istreambuf_iterator<char>(file),
                       std::istreambuf_iterator<char>()};
 
-  bfcxx::lexer lexer {source};
-  bfcxx::interpret(lexer.tokens());
+  bfcxx::parser lexer {source};
+  bfcxx::interpret(lexer.ops());
 }
 
 auto main(int argc, char** argv) -> int

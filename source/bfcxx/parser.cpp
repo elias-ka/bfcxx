@@ -3,7 +3,7 @@
 #include <iostream>
 #include <optional>
 
-#include <bfcxx/lexer.hpp>
+#include <bfcxx/parser.hpp>
 
 namespace bfcxx
 {
@@ -13,14 +13,14 @@ namespace
 constexpr std::array<bool, 256> is_bf_char_byte_table = []
 {
   std::array<bool, 256> table = {};
-  table[literals::increment] = true;
-  table[literals::decrement] = true;
-  table[literals::move_right] = true;
-  table[literals::move_left] = true;
-  table[literals::loop_start] = true;
-  table[literals::loop_end] = true;
-  table[literals::read_stdin] = true;
-  table[literals::write_stdout] = true;
+  table['+'] = true;
+  table['-'] = true;
+  table['>'] = true;
+  table['<'] = true;
+  table['['] = true;
+  table[']'] = true;
+  table[','] = true;
+  table['.'] = true;
   return table;
 }();
 
@@ -37,7 +37,7 @@ constexpr std::array<bool, 256> is_bf_char_byte_table = []
 
 }  // namespace
 
-lexer::lexer(std::string source)
+parser::parser(std::string source)
     : m_source {std::move(source)}
 {
   m_source.erase(std::remove_if(m_source.begin(),
@@ -46,32 +46,31 @@ lexer::lexer(std::string source)
                  m_source.end());
 }
 
-auto lexer::next() -> std::optional<token>
+auto parser::next() -> std::optional<op>
 {
   while (m_pos < m_source.size()) {
     const char c = m_source[m_pos];
     if (!is_repeatable_char(c)) {
       m_pos++;
-      return token {.literal = c, .repeats = 1};
+      return op {.kind = static_cast<op_kind>(c), .arg = 1};
     }
-
     auto begin = m_pos;
     while (m_pos < m_source.size() && m_source[m_pos] == c) {
       m_pos++;
     }
-    return token {.literal = c,
-                  .repeats = static_cast<std::uint32_t>(m_pos - begin)};
+    return op {.kind = static_cast<op_kind>(c),
+               .arg = static_cast<std::uint32_t>(m_pos - begin)};
   }
   return std::nullopt;
 }
 
-auto lexer::tokens() -> std::vector<token>
+auto parser::ops() -> std::vector<op>
 {
-  std::vector<token> tokens;
-  for (auto t = next(); t; t = next()) {
-    tokens.push_back(*t);
+  std::vector<op> ops;
+  while (auto t = next()) {
+    ops.push_back(*t);
   }
-  return tokens;
+  return ops;
 }
 
 }  // namespace bfcxx
