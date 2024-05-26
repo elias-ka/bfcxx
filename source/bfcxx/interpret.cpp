@@ -62,19 +62,11 @@ auto interpret(const std::vector<op>& ops) -> void
 
     switch (op.kind) {
       case op_kind::move_left: {
-        if (ptr - op.arg < 0) {
-          die(std::format("out of bounds access at offset={}", offset));
-          return;
-        }
-        ptr -= op.arg;
+        ptr = (ptr + mem.size() - op.arg) % mem.size();
         break;
       }
       case op_kind::move_right: {
-        if (ptr + op.arg >= mem.size()) {
-          die(std::format("out of bounds access at offset={}", offset));
-          return;
-        }
-        ptr += op.arg;
+        ptr = (ptr + op.arg) % mem.size();
         break;
       }
       case op_kind::increment: {
