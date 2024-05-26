@@ -48,5 +48,15 @@
         "CMAKE_CXX_COMPILER": "clang++"
       }
     }
+  ],
+  "buildPresets": [
+    {
+      "name": "clang-debug",
+      "configurePreset": "clang-debug"
+    },
+    {
+      "name": "clang-release",
+      "configurePreset": "clang-release"
+    }
   ]
 }
