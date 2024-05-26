@@ -3,7 +3,7 @@
 #include <span>
 #include <string>
 
-#include <bfcxx/interpreter.hpp>
+#include <bfcxx/interpret.hpp>
 #include <bfcxx/lexer.hpp>
 
 auto repl() -> void
@@ -11,7 +11,9 @@ auto repl() -> void
   std::string line;
   while (true) {
     std::cout << ">>> ";
-    std::getline(std::cin, line);
+    if (!std::getline(std::cin, line)) {
+      break;
+    }
     if (line.empty()) {
       continue;
     }
@@ -19,8 +21,7 @@ auto repl() -> void
       break;
     }
     bfcxx::lexer lexer {line};
-    bfcxx::interpreter interpreter {lexer.tokens()};
-    interpreter.run();
+    bfcxx::interpret(lexer.tokens());
     std::cout << '\n';
   }
 }
@@ -36,8 +37,7 @@ auto run_file(const std::string& path) -> void
                       std::istreambuf_iterator<char>()};
 
   bfcxx::lexer lexer {source};
-  bfcxx::interpreter interpreter {lexer.tokens()};
-  interpreter.run();
+  bfcxx::interpret(lexer.tokens());
 }
 
 auto main(int argc, char** argv) -> int
