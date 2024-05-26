@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <format>
 #include <iostream>
 #include <span>
@@ -14,6 +15,38 @@ auto die(const std::string& msg) -> void
   // NOLINTNEXTLINE
   std::exit(1);
 }
+
+auto compute_jumptable(const std::vector<token>& tokens)
+    -> std::vector<std::size_t>
+{
+  std::size_t offset {0};
+  std::vector<std::size_t> jump_table(tokens.size(), 0);
+
+  for (; offset < tokens.size(); offset++) {
+    const token& tok = tokens[offset];
+    if (tok.literal == literals::loop_start) {
+      std::size_t depth = 1;
+      std::size_t seek = offset;
+
+      while (depth > 0 && ++seek < tokens.size()) {
+        if (tokens[seek].literal == literals::loop_start) {
+          depth++;
+        } else if (tokens[seek].literal == literals::loop_end) {
+          depth--;
+        }
+      }
+
+      if (depth == 0) {
+        jump_table[offset] = seek;
+        jump_table[seek] = offset;
+      } else {
+        die(std::format("unmatched '[' at offset={}", offset));
+      }
+    }
+  }
+  return jump_table;
+}
+
 }  // namespace
 
 auto interpret(const std::vector<token>& tokens) -> void
@@ -21,6 +54,7 @@ auto interpret(const std::vector<token>& tokens) -> void
   std::vector<std::uint8_t> mem(30000, 0);
   std::size_t offset {0};
   std::size_t ptr {0};
+  const auto jump_table = compute_jumptable(tokens);
 
   for (; offset < tokens.size(); offset++) {
     const token& tok = tokens[offset];
@@ -43,17 +77,13 @@ auto interpret(const std::vector<token>& tokens) -> void
         break;
       }
       case literals::increment: {
-        mem.at(ptr) += tok.repeats;
-        if (mem.at(ptr) > 255) {
-          mem.at(ptr) = 0;
-        }
+        mem.at(ptr) =
+            static_cast<std::uint8_t>((mem.at(ptr) + tok.repeats) % 256);
         break;
       }
       case literals::decrement: {
-        mem.at(ptr) -= tok.repeats;
-        if (mem.at(ptr) < 0) {
-          mem.at(ptr) = 255;
-        }
+        mem.at(ptr) =
+            static_cast<std::uint8_t>((mem.at(ptr) - tok.repeats + 256) % 256);
         break;
       }
       case literals::write_stdout: {
@@ -66,39 +96,13 @@ auto interpret(const std::vector<token>& tokens) -> void
       }
       case literals::loop_start: {
         if (mem.at(ptr) == 0) {
-          std::size_t depth = 1;
-          std::size_t saved_offset = offset;
-
-          while (depth != 0) {
-            if (++offset >= tokens.size()) {
-              die(std::format("unmatched '[' at offset={}", saved_offset));
-            }
-            const token& t = tokens[offset];
-            if (t.literal == literals::loop_start) {
-              depth++;
-            } else if (t.literal == literals::loop_end) {
-              depth--;
-            }
-          }
+          offset = jump_table[offset];
         }
         break;
       }
       case literals::loop_end: {
         if (mem.at(ptr) != 0) {
-          std::size_t depth = 1;
-          std::size_t saved_offset = offset;
-
-          while (depth != 0) {
-            if (--offset == 0) {
-              die(std::format("unmatched ']' at offset={}", saved_offset));
-            }
-            const token& t = tokens[offset];
-            if (t.literal == literals::loop_start) {
-              depth--;
-            } else if (t.literal == literals::loop_end) {
-              depth++;
-            }
-          }
+          offset = jump_table[offset];
         }
         break;
       }
