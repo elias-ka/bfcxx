@@ -36,8 +36,8 @@ auto run_file(const std::string& path) -> void
   std::string source {std::istreambuf_iterator<char>(file),
                       std::istreambuf_iterator<char>()};
 
-  bfcxx::parser lexer {source};
-  bfcxx::interpret(lexer.ops());
+  bfcxx::parser parser {source};
+  bfcxx::interpret(parser.ops());
 }
 
 auto main(int argc, char** argv) -> int
