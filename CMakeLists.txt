@@ -24,6 +24,7 @@ if(NOT PROJECT_IS_TOP_LEVEL)
 endif()
 
 if(BFCXX_BUILD_TESTS)
+  enable_testing()
   message(STATUS "Building tests")
   add_subdirectory(test)
 endif()
