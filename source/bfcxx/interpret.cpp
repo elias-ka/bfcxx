@@ -19,10 +19,9 @@ auto die(const std::string& msg) -> void
 [[nodiscard]] auto compute_jumptable(const std::vector<op>& ops)
     -> std::vector<std::size_t>
 {
-  std::size_t offset {0};
   std::vector<std::size_t> jump_table(ops.size(), 0);
 
-  for (; offset < ops.size(); offset++) {
+  for (std::size_t offset {0}; offset < ops.size(); offset++) {
     const auto op = ops[offset];
     if (op.kind == op_kind::loop_start) {
       std::size_t depth = 1;
@@ -54,11 +53,10 @@ auto interpret(const std::vector<op>& ops) -> void
   const std::size_t byte_size = 256;
   const std::size_t mem_size = 30000;
   std::vector<std::uint8_t> mem(mem_size, 0);
-  std::size_t offset {0};
   std::size_t ptr {0};
   const auto jump_table = compute_jumptable(ops);
 
-  for (; offset < ops.size(); offset++) {
+  for (std::size_t offset {0}; offset < ops.size(); offset++) {
     const auto op = ops[offset];
 
     switch (op.kind) {
