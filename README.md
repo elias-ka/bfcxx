@@ -5,10 +5,10 @@ Brainfuck is a  [Turing complete](https://en.wikipedia.org/wiki/Turing_completen
 It consists of only 8 commands:
 | Command | bfcxx interpretation |
 | ------- | ---------------------|
-| `<`     | Move the pointer to the left with wraparound |
-| `>`     | Move the pointer to the right with wraparound |
-| `+`     | Increment the memory cell at the pointer with wraparound |
-| `-`     | Decrement the memory cell at the pointer with wraparound |
+| `<`     | Move the pointer to the left |
+| `>`     | Move the pointer to the right |
+| `+`     | Increment the memory cell at the pointer |
+| `-`     | Decrement the memory cell at the pointer |
 | `.`     | Write the character at the pointer to standard output |
 | `,`     | Read a character from standard input and store it at the pointer |
 | `[`     | Jump forward to the command after the matching `]` if the memory cell at the pointer is zero |
