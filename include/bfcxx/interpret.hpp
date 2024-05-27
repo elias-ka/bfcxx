@@ -1,7 +1,5 @@
 #pragma once
 
-#include <span>
-
 #include <bfcxx/parser.hpp>
 
 namespace bfcxx

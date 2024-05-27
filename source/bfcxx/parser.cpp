@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <array>
-#include <iostream>
 #include <optional>
 
 #include <bfcxx/parser.hpp>
