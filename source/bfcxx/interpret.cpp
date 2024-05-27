@@ -1,7 +1,6 @@
-#include <algorithm>
+#include <cstddef>
 #include <format>
 #include <iostream>
-#include <span>
 
 #include <bfcxx/interpret.hpp>
 
@@ -52,7 +51,9 @@ auto die(const std::string& msg) -> void
 
 auto interpret(const std::vector<op>& ops) -> void
 {
-  std::vector<std::uint8_t> mem(30000, 0);
+  const std::size_t byte_size = 256;
+  const std::size_t mem_size = 30000;
+  std::vector<std::uint8_t> mem(mem_size, 0);
   std::size_t offset {0};
   std::size_t ptr {0};
   const auto jump_table = compute_jumptable(ops);
@@ -62,20 +63,29 @@ auto interpret(const std::vector<op>& ops) -> void
 
     switch (op.kind) {
       case op_kind::move_left: {
+#ifdef BFCXX_WITH_WRAPAROUND
         ptr = (ptr + mem.size() - op.arg) % mem.size();
+#else
+        ptr -= op.arg;
+#endif
         break;
       }
       case op_kind::move_right: {
+#ifdef BFCXX_WITH_WRAPAROUND
         ptr = (ptr + op.arg) % mem.size();
+#else
+        ptr += op.arg;
+#endif
         break;
       }
       case op_kind::increment: {
-        mem.at(ptr) = static_cast<std::uint8_t>((mem.at(ptr) + op.arg) % 256);
+        mem.at(ptr) =
+            static_cast<std::uint8_t>((mem.at(ptr) + op.arg) % byte_size);
         break;
       }
       case op_kind::decrement: {
         mem.at(ptr) =
-            static_cast<std::uint8_t>((mem.at(ptr) - op.arg + 256) % 256);
+            static_cast<std::uint8_t>((mem.at(ptr) - op.arg) % byte_size);
         break;
       }
       case op_kind::write_stdout: {

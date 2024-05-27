@@ -17,6 +17,10 @@ set_target_properties(
              VISIBILITY_INLINES_HIDDEN YES
 )
 
+if(BFCXX_WITH_WRAPAROUND)
+  target_compile_definitions(bfcxx_lib PUBLIC BFCXX_WITH_WRAPAROUND)
+endif()
+
 generate_export_header(
   bfcxx_lib EXPORT_FILE_NAME
   ${PROJECT_BINARY_DIR}/include/bfcxx/bfcxx_lib_export.hpp
