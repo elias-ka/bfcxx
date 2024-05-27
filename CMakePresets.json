@@ -26,23 +26,17 @@
     {
       "name": "clang-debug",
       "description": "Debug build with Clang",
-      "inherits": [
-        "common",
-        "flags-gcc-clang"
-      ],
+      "inherits": ["common", "flags-gcc-clang"],
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_CXX_COMPILER": "clang++",
-        "BUILD_TESTING": "ON"
+        "BFCXX_BUILD_TESTS": "ON"
       }
     },
     {
       "name": "clang-release",
       "description": "Release build with Clang",
-      "inherits": [
-        "common",
-        "flags-gcc-clang"
-      ],
+      "inherits": ["common", "flags-gcc-clang"],
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_COMPILER": "clang++"
@@ -51,23 +45,17 @@
     {
       "name": "gcc-debug",
       "description": "Debug build with GCC",
-      "inherits": [
-        "common",
-        "flags-gcc-clang"
-      ],
+      "inherits": ["common", "flags-gcc-clang"],
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_CXX_COMPILER": "g++",
-        "BUILD_TESTING": "ON"
+        "BFCXX_BUILD_TESTS": "ON"
       }
     },
     {
       "name": "gcc-release",
       "description": "Release build with GCC",
-      "inherits": [
-        "common",
-        "flags-gcc-clang"
-      ],
+      "inherits": ["common", "flags-gcc-clang"],
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_COMPILER": "g++"
